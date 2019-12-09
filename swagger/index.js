@@ -1,17 +1,17 @@
 var swaggerUi = require('swagger-ui-express');
 var swaggerJSDoc = require('swagger-jsdoc');
-var config = require('../config')
+var swaggerConfig = require('../config').swaggerConfig
 
 exports.setSwagger = function (app) {
     const options = {
         definition: {
-            openapi: config.swaggerConfig.openapi,
+            openapi: swaggerConfig.openapi,
             info: {
-                title: config.swaggerConfig.title,
-                version: config.swaggerConfig.version
+                title: swaggerConfig.title,
+                version: swaggerConfig.version
             }
         },
-        apis: config.swaggerConfig.apis
+        apis: swaggerConfig.apis
     }
 
     const swaggerSpec = swaggerJSDoc(options)
@@ -20,5 +20,5 @@ exports.setSwagger = function (app) {
         res.setHeader('Content-Type', 'application/json')
         res.send(swaggerSpec)
     })
-    app.use(config.swaggerConfig.routerPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    app.use(swaggerConfig.routerPath, swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 }
