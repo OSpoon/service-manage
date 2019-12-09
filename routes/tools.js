@@ -1,6 +1,8 @@
 var express = require('express')
 var router = express.Router();
 
+var DES3 = require('../libs/security/DES3');
+
 /* tools listing */
 
 router.all('/', function (req, res, next) {
@@ -26,6 +28,61 @@ router.get('/',function (req, res ,next) {
 
 router.get('/users/:userId/books/:bookId',function (req, res ,next) {
     res.send(req.params)
+})
+/**
+ *http://localhost:3000/tools/des3/encrypt/1234567890
+ *@swagger
+ *'/tools/des3/encrypt/{plaintext}':
+ *   get:
+ *     tags:
+ *       - plaintext
+ *     description: Return encrypted content
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: plaintext
+ *         in: path
+ *         description: Clear text before encryption
+ *         required: true
+ *         type: string
+ *     responses:
+ *       '200':
+ *         description: successful operation
+ *         schema:
+ *           type: object
+ *           required:
+ *              - ciphertext
+*/
+router.get('/des3/encrypt/:plaintext',function (req, res) {
+    res.send({'ciphertext':DES3.encrypt('', req.params.plaintext)})
+})
+
+/**
+ *http://localhost:3000/tools/des3/decrypt/zWI1jkgPpYUys5c06MYEQQ==
+ *@swagger
+ *'/tools/des3/decrypt/{ciphertext}':
+ *   get:
+ *     tags:
+ *       - ciphertext
+ *     description: Return encrypted content
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: ciphertext
+ *         in: path
+ *         description: Clear text before encryption
+ *         required: true
+ *         type: string
+ *     responses:
+ *       '200':
+ *         description: successful operation
+ *         schema:
+ *           type: object
+ *           required:
+ *              - plaintext
+ */
+router.get('/des3/decrypt/:ciphertext',function (req, res) {
+    res.send(DES3.decrypt('', req.params.ciphertext))
 })
 
 router.post('/', function (req, res) {
