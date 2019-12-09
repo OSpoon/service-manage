@@ -209,3 +209,27 @@ var app = express();
 ...
 swaggerConfig.setSwagger(app)
 ```
+
+#### PM2使用
+###### 安装:
+```
+npm install pm2 -g
+```
+
+###### 启动:
+```
+pm2 start app.js
+```
+
+###### 其他:
+```
+pm2 list
+
+pm2 stop 0
+
+pm2 restart 0
+
+pm2 show 0
+
+pm2 delete 0
+```

@@ -23,7 +23,7 @@ router.all('/', function (req, res, next) {
  *         description: 【成功】 返回 world
  */
 router.get('/',function (req, res ,next) {
-    res.render('index');
+    res.render('index', { title: 'Hey', message: 'Hello there!' })
 })
 
 router.get('/users/:userId/books/:bookId',function (req, res ,next) {
