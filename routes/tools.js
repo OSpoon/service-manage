@@ -1,4 +1,6 @@
 var express = require('express')
+var multer = require('multer'); // v1.0.5
+var upload = multer(); // for parsing multipart/form-data
 var router = express.Router();
 
 var DES3 = require('../libs/security/DES3');
@@ -6,23 +8,18 @@ var MD5 = require('../libs/security/md5-min').hex_hmac_md5
 
 /* tools listing */
 
-router.all('/', function (req, res, next) {
-    console.log('Accessing the secret section ...')
-    next() // pass control to the next handler
-})
+// router.all('/', function (req, res, next) {
+//     console.log('Accessing the secret section ...')
+//     next() // pass control to the next handler
+// })
 
-/**
- * @swagger
- * /hello:
- *   get:
- *     tags:
- *       - 测试
- *     summary: GET 测试
- *     description: 用于测试基础 GET 请求的接口
- *     responses:
- *       200:
- *         description: 【成功】 返回 world
- */
+// simple logger for this router's requests
+// all requests to this router will first hit this middleware
+router.use(function(req, res, next) {
+    console.log('REQUEST ===> %s %s %s', req.method, req.url, req.path);
+    next();
+});
+
 router.get('/',function (req, res ,next) {
     res.render('index', { title: 'Hey', message: 'Hello there!' })
 })
@@ -116,8 +113,7 @@ router.get('/des3/decrypt/:ciphertext',function (req, res) {
  *           required:
  *              - result
  */
-router.get('/md5/:key/:value',function (req, res) {
-    console.log(req.params)
+router.get('/md5/:key/:value', upload.array(), function (req, res) {
     res.send({'result':MD5(req.params.key,req.params.value)})
 })
 
