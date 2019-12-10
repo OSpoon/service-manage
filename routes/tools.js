@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router();
 
 var DES3 = require('../libs/security/DES3');
+var MD5 = require('../libs/security/md5-min').hex_hmac_md5
 
 /* tools listing */
 
@@ -29,13 +30,14 @@ router.get('/',function (req, res ,next) {
 router.get('/users/:userId/books/:bookId',function (req, res ,next) {
     res.send(req.params)
 })
+
 /**
  *http://localhost:3000/tools/des3/encrypt/1234567890
  *@swagger
  *'/tools/des3/encrypt/{plaintext}':
  *   get:
  *     tags:
- *       - plaintext
+ *       - des3
  *     description: Return encrypted content
  *     produces:
  *       - application/json
@@ -63,7 +65,7 @@ router.get('/des3/encrypt/:plaintext',function (req, res) {
  *'/tools/des3/decrypt/{ciphertext}':
  *   get:
  *     tags:
- *       - ciphertext
+ *       - des3
  *     description: Return encrypted content
  *     produces:
  *       - application/json
@@ -83,6 +85,40 @@ router.get('/des3/encrypt/:plaintext',function (req, res) {
  */
 router.get('/des3/decrypt/:ciphertext',function (req, res) {
     res.send(DES3.decrypt('', req.params.ciphertext))
+})
+
+/**
+ *http://localhost:3000/tools/md5/1234567890/0987654321
+ *@swagger
+ *'/tools/md5/{key}/{value}':
+ *   get:
+ *     tags:
+ *       - md5
+ *     description: Return encrypted content
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: key
+ *         in: path
+ *         description: Encryption key
+ *         required: true
+ *         type: string
+ *       - name: value
+ *         in: path
+ *         description: Clear text before encryption
+ *         required: true
+ *         type: string
+ *     responses:
+ *       '200':
+ *         description: successful operation
+ *         schema:
+ *           type: object
+ *           required:
+ *              - result
+ */
+router.get('/md5/:key/:value',function (req, res) {
+    console.log(req.params)
+    res.send({'result':MD5(req.params.key,req.params.value)})
 })
 
 router.post('/', function (req, res) {
