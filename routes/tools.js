@@ -16,7 +16,7 @@ var MD5 = require('../libs/security/md5-min').hex_hmac_md5
 // simple logger for this router's requests
 // all requests to this router will first hit this middleware
 router.use(function(req, res, next) {
-    console.log('REQUEST ===> %s %s %s', req.method, req.url, req.path);
+    console.log('REQUEST ===> %s %s %s', req.method, req.url, req.path, req.body);
     next();
 });
 
@@ -115,6 +115,41 @@ router.get('/des3/decrypt/:ciphertext',function (req, res) {
  */
 router.get('/md5/:key/:value', upload.array(), function (req, res) {
     res.send({'result':MD5(req.params.key,req.params.value)})
+})
+
+/**
+ *http://localhost:3000/tools/handler
+ *@swagger
+ *'/tools/handler':
+ *   post:
+ *     tags:
+ *       - 光速保半加密报文解析
+ *     description: 返回解析后的报文
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: string
+ *     responses:
+ *       '200':
+ *         description: successful operation
+ *         schema:
+ *           type: object
+ *           required:
+ *              - result
+ */
+router.post('/handler', upload.array(), function (req, res) {
+    console.log(req.body.packageList.packages.header.requestType)
+    console.log(req.body.packageList.packages.header.sendTime)
+    console.log(req.body.packageList.packages.header.from)
+    console.log(DES3.decrypt('', req.body.packageList.packages.request))
+    res.status(201).json(
+        {
+            interface: req.body.packageList.packages.header.requestType,
+            sendTime: req.body.packageList.packages.header.sendTime,
+            from: req.body.packageList.packages.header.from,
+            result: JSON.parse(DES3.decrypt('', req.body.packageList.packages.request))
+        });
 })
 
 router.post('/', function (req, res) {
